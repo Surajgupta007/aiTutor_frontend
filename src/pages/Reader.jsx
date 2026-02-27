@@ -44,30 +44,21 @@ const Reader = () => {
     };
 
     useEffect(() => {
-        const fetchDoc = async () => {
-            try {
-                const res = await api.get(`/documents/${id}`);
-                setDocument(res.data.data);
-                if (res.data.data.summary) {
-                    setSummary(res.data.data.summary);
-                }
-                // Fetch signed URL to bypass Cloudinary auth
-                try {
-                    const urlRes = await api.get(`/documents/${id}/file-url`);
-                    setFileUrl(urlRes.data.url);
-                } catch {
-                    // fallback: use raw filePath
-                    const doc = res.data.data;
-                    setFileUrl(doc.filePath?.startsWith('http')
-                        ? doc.filePath
-                        : `${import.meta.env.VITE_API_BASE || 'http://localhost:5001'}/${doc.filePath}`);
-                }
-            } catch (err) {
-                console.error(err);
+    const fetchDoc = async () => {
+        try {
+            const res = await api.get(`/documents/${id}`);
+            setDocument(res.data.data);
+            setFileUrl(res.data.data.filePath);
+
+            if (res.data.data.summary) {
+                setSummary(res.data.data.summary);
             }
-        };
-        fetchDoc();
-    }, [id]);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+    fetchDoc();
+}, [id]);
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
