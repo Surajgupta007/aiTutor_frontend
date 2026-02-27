@@ -137,7 +137,11 @@ const Reader = () => {
         }
     };
 
-    const fileUrl = document ? `http://localhost:5001/${document.filePath}` : null;
+    const fileUrl = document
+        ? (document.filePath?.startsWith('http')
+            ? document.filePath
+            : `${import.meta.env.VITE_API_BASE || 'http://localhost:5001'}/${document.filePath}`)
+        : null;
 
     return (
         <div className="h-[calc(100vh-4rem)] md:h-[calc(100vh-6rem)] w-full flex flex-col pt-2 text-slate-900 dark:text-white relative">
@@ -148,8 +152,8 @@ const Reader = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     className={`fixed top-6 right-6 z-50 px-5 py-3 rounded-xl shadow-lg text-sm font-medium border backdrop-blur-sm max-w-sm ${toast.type === 'success' ? 'bg-emerald-50 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-500/30' :
-                            toast.type === 'error' ? 'bg-red-50 dark:bg-red-500/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-500/30' :
-                                'bg-indigo-50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-500/30'
+                        toast.type === 'error' ? 'bg-red-50 dark:bg-red-500/20 text-red-700 dark:text-red-300 border-red-200 dark:border-red-500/30' :
+                            'bg-indigo-50 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-500/30'
                         }`}
                 >
                     {toast.message}
