@@ -79,7 +79,8 @@ const Profile = () => {
         return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     };
 
-    const profilePicUrl = user?.profilePicture ? `${API_BASE}${user.profilePicture}` : null;
+    // profilePicture is now a full Cloudinary URL — use it directly
+    const profilePicUrl = user?.profilePicture || null;
 
     const statCards = stats ? [
         { label: 'Quizzes Taken', value: stats.totalQuizzes, icon: Target, color: 'indigo', bg: 'bg-indigo-50 dark:bg-indigo-500/10', text: 'text-indigo-600 dark:text-indigo-400' },
