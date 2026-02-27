@@ -16,6 +16,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 const Reader = () => {
     const { id } = useParams();
     const [document, setDocument] = useState(null);
+    const [fileUrl, setFileUrl] = useState(null);
 
     // PDF state
     const [numPages, setNumPages] = useState(null);
@@ -49,6 +50,17 @@ const Reader = () => {
                 setDocument(res.data.data);
                 if (res.data.data.summary) {
                     setSummary(res.data.data.summary);
+                }
+                // Fetch signed URL to bypass Cloudinary auth
+                try {
+                    const urlRes = await api.get(`/documents/${id}/file-url`);
+                    setFileUrl(urlRes.data.url);
+                } catch {
+                    // fallback: use raw filePath
+                    const doc = res.data.data;
+                    setFileUrl(doc.filePath?.startsWith('http')
+                        ? doc.filePath
+                        : `${import.meta.env.VITE_API_BASE || 'http://localhost:5001'}/${doc.filePath}`);
                 }
             } catch (err) {
                 console.error(err);
@@ -137,11 +149,7 @@ const Reader = () => {
         }
     };
 
-    const fileUrl = document
-        ? (document.filePath?.startsWith('http')
-            ? document.filePath
-            : `${import.meta.env.VITE_API_BASE || 'http://localhost:5001'}/${document.filePath}`)
-        : null;
+    // fileUrl is set by the useEffect above (fetched as signed URL)
 
     return (
         <div className="h-[calc(100vh-4rem)] md:h-[calc(100vh-6rem)] w-full flex flex-col pt-2 text-slate-900 dark:text-white relative">
