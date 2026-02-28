@@ -34,7 +34,7 @@ const Dashboard = () => {
         return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
     };
 
-    const profilePicUrl = user?.profilePicture ? `${import.meta.env.VITE_API_BASE || 'http://localhost:5001'}${user.profilePicture}` : null;
+    const profilePicUrl = user?.profilePicture || null;
 
     return (
         <div className="text-slate-900 dark:text-white pb-10">
